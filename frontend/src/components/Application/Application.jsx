@@ -1,8 +1,9 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { Context } from "../../main";
+
 const Application = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -12,8 +13,8 @@ const Application = () => {
   const [resume, setResume] = useState(null);
 
   const { isAuthorized, user } = useContext(Context);
-
   const navigateTo = useNavigate();
+  const { id } = useParams();
 
   // Function to handle file input changes
   const handleFileChange = (event) => {
@@ -21,9 +22,10 @@ const Application = () => {
     setResume(resume);
   };
 
-  const { id } = useParams();
   const handleApplication = async (e) => {
     e.preventDefault();
+    console.log("Submitting application...");
+
     const formData = new FormData();
     formData.append("name", name);
     formData.append("email", email);
@@ -44,22 +46,28 @@ const Application = () => {
           },
         }
       );
+      console.log("Application submitted successfully:", data);
       setName("");
       setEmail("");
       setCoverLetter("");
       setPhone("");
       setAddress("");
-      setResume("");
+      setResume(null);
       toast.success(data.message);
-      navigateTo("/job/getall");
+      navigateTo("/jobs");
     } catch (error) {
+      console.error("Error submitting application:", error.response.data.message);
       toast.error(error.response.data.message);
     }
   };
 
-  if (!isAuthorized || (user && user.role === "Employer")) {
-    navigateTo("/");
-  }
+  useEffect(() => {
+    console.log("Checking authorization...");
+    if (!isAuthorized || (user && user.role === "Employer")) {
+      console.log("Not authorized or user is an Employer. Redirecting...");
+      navigateTo("/");
+    }
+  }, [isAuthorized, user, navigateTo]);
 
   return (
     <section className="application">
@@ -91,14 +99,12 @@ const Application = () => {
             onChange={(e) => setAddress(e.target.value)}
           />
           <textarea
-            placeholder="CoverLetter..."
+            placeholder="Cover Letter..."
             value={coverLetter}
             onChange={(e) => setCoverLetter(e.target.value)}
           />
           <div>
-            <label
-              style={{ textAlign: "start", display: "block", fontSize: "20px" }}
-            >
+            <label style={{ textAlign: "start", display: "block", fontSize: "20px" }}>
               Select Resume
             </label>
             <input

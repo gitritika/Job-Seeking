@@ -8,6 +8,17 @@ import cors from "cors";
 import { errorMiddleware } from "./middlewares/error.js";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
+import dotenv from 'dotenv';
+import cloudinary from 'cloudinary';
+
+dotenv.config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLIENT_NAME,
+  api_key: process.env.CLOUDINARY_CLIENT_API,
+  api_secret: process.env.CLOUDINARY_CLIENT_SECRET,
+});
+
 
 const app = express();
 config({ path: "./config/config.env" });
@@ -37,3 +48,4 @@ dbConnection();
 
 app.use(errorMiddleware);
 export default app;
+

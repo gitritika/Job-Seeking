@@ -1,3 +1,5 @@
+// App.jsx
+
 import React, { useContext, useEffect } from "react";
 import "./App.css";
 import { Context } from "./main";
@@ -19,6 +21,7 @@ import MyJobs from "./components/Job/MyJobs";
 
 const App = () => {
   const { isAuthorized, setIsAuthorized, setUser } = useContext(Context);
+  
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -31,11 +34,12 @@ const App = () => {
         setUser(response.data.user);
         setIsAuthorized(true);
       } catch (error) {
+        console.error('Error fetching user:', error);
         setIsAuthorized(false);
       }
     };
     fetchUser();
-  }, [isAuthorized]);
+  }, [isAuthorized, setUser, setIsAuthorized]);
 
   return (
     <>

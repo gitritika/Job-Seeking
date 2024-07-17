@@ -33,12 +33,14 @@ const Login = () => {
       setRole("");
       setIsAuthorized(true);
     } catch (error) {
-      toast.error(error.response.data.message);
+      console.error("Login error: ", error.response);  // Log the full error response for debugging
+      toast.error(error.response?.data?.message || "Please fill all the fields");
     }
   };
+  
 
-  if(isAuthorized){
-    return <Navigate to={'/'}/>
+  if (isAuthorized) {
+    return <Navigate to="/" />;
   }
 
   return (
@@ -66,7 +68,7 @@ const Login = () => {
               <div>
                 <input
                   type="email"
-                  placeholder="zk@gmail.com"
+                  placeholder="abcd@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -88,7 +90,7 @@ const Login = () => {
             <button type="submit" onClick={handleLogin}>
               Login
             </button>
-            <Link to={"/register"}>Register Now</Link>
+            <Link to="/register">Register Now</Link>
           </form>
         </div>
         <div className="banner">
